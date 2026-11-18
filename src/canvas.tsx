@@ -1,4 +1,6 @@
 import {
+  Background,
+  BackgroundVariant,
   type Edge,
   type Node,
   PanOnScrollMode,
@@ -11,10 +13,26 @@ import "@xyflow/react/style.css"
 export const MIN_ZOOM = 0.1
 export const MAX_ZOOM = 4
 
+/** Native React Flow gestures with an optional themed dot grid. */
+export function FlowCanvas<N extends Node = Node, E extends Edge = Edge>({
+  children,
+  backgroundSize,
+  showBackground = true,
+  ...props
+}: ReactFlowProps<N, E> & { backgroundSize?: number; showBackground?: boolean }) {
+  return (
+    <ReactFlow<N, E> {...props}>
+      {showBackground && <Background variant={BackgroundVariant.Dots} size={backgroundSize} />}
+      {children}
+    </ReactFlow>
+  )
+}
+
 /** A work view owns its objects, relations, renderers and saved viewport. */
 export function WorkCanvas<N extends Node = Node, E extends Edge = Edge>(props: ReactFlowProps<N, E>) {
   return (
-    <ReactFlow<N, E>
+    <FlowCanvas<N, E>
+      showBackground={false}
       minZoom={MIN_ZOOM}
       maxZoom={MAX_ZOOM}
       panOnDrag={[1, 2]}
