@@ -70,11 +70,15 @@ export function inspectDependencies<R extends Pick<WorkRelation, "source" | "tar
     if (entries) entries.push(relation)
     else outgoing.set(relation.source, [relation])
   }
+  const reachableInputs = new Map<string, R[]>()
   const visited = new Set([id])
   const impact: Array<{ relation: R; depth: number }> = []
   const queue = [{ id, depth: 0 }]
   for (const current of queue) {
     for (const relation of outgoing.get(current.id) ?? []) {
+      const inputs = reachableInputs.get(relation.target)
+      if (inputs) inputs.push(relation)
+      else reachableInputs.set(relation.target, [relation])
       if (visited.has(relation.target)) continue
       visited.add(relation.target)
       const depth = current.depth + 1
@@ -82,5 +86,5 @@ export function inspectDependencies<R extends Pick<WorkRelation, "source" | "tar
       queue.push({ id: relation.target, depth })
     }
   }
-  return { upstream, downstream: outgoing.get(id) ?? [], visited, impact }
+  return { upstream, downstream: outgoing.get(id) ?? [], visited, impact, reachableInputs }
 }

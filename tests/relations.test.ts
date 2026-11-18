@@ -24,6 +24,8 @@ test("inspection preserves independent paths, direct references and approval cyc
     { source: "review", target: "quote" }
   ]
   const graph = inspectDependencies(links, "quote")
+  expect(graph.reachableInputs.get("send")).toEqual([links[2], links[3]])
+  expect(graph.reachableInputs.get("quote")).toEqual([links[4]])
   expect(graph.upstream).toEqual([links[4]])
   expect(graph.downstream).toEqual(links.slice(0, 2))
   expect(graph.impact).toEqual([
