@@ -1,0 +1,20 @@
+{
+  "name": "@alwith/workflow",
+  "version": "0.5.0",
+  "type": "module",
+  "exports": {
+    ".": "./src/relations.ts",
+    "./canvas": "./src/canvas.tsx",
+    "./projection": "./src/projection.ts"
+  },
+  "files": ["src"],
+  "peerDependencies": {
+    "@xyflow/react": "^13.0.2",
+    "react": "^19.3.1"
+  },
+  "peerDependenciesMeta": {
+    "@xyflow/react": { "optional": true },
+    "react": { "optional": true }
+  },
+  "scripts": { "test": "bun test" }
+}

@@ -1,0 +1,18 @@
+{
+  "lockfileVersion": 2,
+  "configVersion": 1,
+  "workspaces": {
+    "": {
+      "name": "@alwith/workflow",
+      "peerDependencies": {
+        "@xyflow/react": "^13.0.2",
+        "react": "^19.3.1",
+      },
+      "optionalPeers": [
+        "@xyflow/react",
+        "react",
+      ],
+    },
+  },
+  "packages": {}
+}
