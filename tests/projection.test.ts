@@ -1,5 +1,5 @@
 import { expect, test } from "bun:test"
-import { projectWorkNodes, projectWorkEdges } from "@alwith/workflow/projection"
+import { projectWorkNodes, projectWorkEdges } from "@nyssance/metro/projection"
 
 test("a partial layout leaves work relations intact", () => {
   const objects = { brief: "Brief", review: "Review" }

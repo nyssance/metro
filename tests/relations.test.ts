@@ -1,6 +1,6 @@
 import { expect, test } from "bun:test"
 
-import { findRelation, inspectDependencies, resolveInputs } from "@alwith/workflow"
+import { findRelation, inspectDependencies, resolveInputs } from "@nyssance/metro"
 
 test("a quote can use attachments without a canvas and retain legacy binding order", () => {
   const objects = { email: "supplier quote", sheet: "price list" }
