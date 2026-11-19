@@ -235,7 +235,7 @@ export function SnapGuides({ guides }: { guides: SnapGuide[] }) {
                 y1={from.y}
                 x2={to.x}
                 y2={to.y}
-                stroke="#478EFF"
+                stroke="var(--metro-guide, #478eff)"
                 strokeWidth={0.5}
                 strokeLinecap="round"
                 strokeDasharray="4 4"
@@ -251,7 +251,7 @@ export function SnapGuides({ guides }: { guides: SnapGuide[] }) {
               y1={from.y}
               x2={to.x}
               y2={to.y}
-              stroke="#478EFF"
+              stroke="var(--metro-guide, #478eff)"
               strokeWidth={0.5}
               strokeLinecap="round"
               strokeDasharray="4 4"

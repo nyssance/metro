@@ -1,0 +1,53 @@
+/*
+ * The Nyssance look: a dark canvas with quiet translucent links that turn solid white when
+ * selected, a soft rounded selection, and hands instead of crosshairs. An application adjusts it
+ * through the custom properties below, or replaces it with its own stylesheet.
+ */
+@import "@xyflow/react/style.css";
+
+.metro-nyssance {
+  --metro-edge: rgba(255, 255, 255, 0.376);
+  --metro-edge-selected: #fff;
+  --metro-edge-width: 2.5px;
+  --metro-selection: rgba(255, 255, 255, 0.06);
+  --metro-selection-border: rgba(255, 255, 255, 0.32);
+  --metro-selection-padding: 0px;
+  --metro-guide: #478eff;
+}
+
+.metro-nyssance .react-flow__edge .react-flow__edge-path {
+  stroke: var(--metro-edge);
+  stroke-width: var(--metro-edge-width);
+}
+.metro-nyssance .react-flow__edge.selected .react-flow__edge-path {
+  stroke: var(--metro-edge-selected);
+}
+
+/* A handle is grabbed, and so is a node while it moves. */
+.metro-nyssance .react-flow__handle {
+  cursor: grab;
+}
+.metro-nyssance .react-flow__node.dragging {
+  cursor: grabbing;
+}
+
+/* Dragging the marquee keeps its exact hit area. */
+.metro-nyssance .react-flow__selection {
+  background: var(--metro-selection);
+  border: 1px solid var(--metro-selection-border);
+}
+
+/* Expand only the painted bounds, preserving React Flow's selection geometry. */
+.metro-nyssance .react-flow__nodesselection-rect {
+  background: transparent;
+  border: 0;
+}
+.metro-nyssance .react-flow__nodesselection-rect::before {
+  content: "";
+  position: absolute;
+  inset: calc(-1 * var(--metro-selection-padding));
+  border: 1px solid var(--metro-selection-border);
+  border-radius: 16px;
+  background: var(--metro-selection);
+  pointer-events: none;
+}

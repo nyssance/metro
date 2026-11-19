@@ -7,6 +7,7 @@
     "./canvas": "./src/canvas.tsx",
     "./grid": "./src/grid.ts",
     "./history": "./src/history.ts",
+    "./presets/*.css": "./src/presets/*.css",
     "./snap": "./src/snap.tsx",
     "./tidy": "./src/tidy.ts"
   },

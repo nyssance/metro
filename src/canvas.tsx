@@ -8,28 +8,41 @@ import {
   type ReactFlowProps,
   SelectionMode
 } from "@xyflow/react"
-import "@xyflow/react/style.css"
 
 export const MIN_ZOOM = 0.1
 export const MAX_ZOOM = 4
+
+/**
+ * How a canvas looks is the application's own: it imports one of the presets, `flow` (React Flow
+ * as it comes) or `nyssance`, or its own stylesheet, and may name the preset here to scope it.
+ */
+export type CanvasPreset = "flow" | "nyssance"
+
+function presetClass(preset: CanvasPreset | undefined, className: string | undefined): string | undefined {
+  return [preset && `metro-${preset}`, className].filter(Boolean).join(" ") || undefined
+}
 
 /** Native React Flow gestures with an optional themed dot grid. */
 export function FlowCanvas<N extends Node = Node, E extends Edge = Edge>({
   children,
   backgroundSize,
   showBackground = true,
+  preset,
+  className,
   ...props
-}: ReactFlowProps<N, E> & { backgroundSize?: number; showBackground?: boolean }) {
+}: ReactFlowProps<N, E> & { backgroundSize?: number; showBackground?: boolean; preset?: CanvasPreset }) {
   return (
-    <ReactFlow<N, E> {...props}>
+    <ReactFlow<N, E> {...props} className={presetClass(preset, className)}>
       {showBackground && <Background variant={BackgroundVariant.Dots} size={backgroundSize} />}
       {children}
     </ReactFlow>
   )
 }
 
-/** A work view owns its objects, relations, renderers and saved viewport. */
-export function WorkCanvas<N extends Node = Node, E extends Edge = Edge>(props: ReactFlowProps<N, E>) {
+/** The shared canvas gestures: drag to select, scroll to pan, pinch to zoom, middle or right drag to pan. */
+export function WorkCanvas<N extends Node = Node, E extends Edge = Edge>(
+  props: ReactFlowProps<N, E> & { preset?: CanvasPreset }
+) {
   return (
     <FlowCanvas<N, E>
       showBackground={false}
