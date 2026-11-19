@@ -1,6 +1,7 @@
 import { expect, test } from "bun:test"
 
 import {
+  type CanvasDocument,
   colorNode,
   connect,
   copyNodes,
@@ -119,7 +120,7 @@ test("a canvas written elsewhere round-trips with the attributes this applicatio
       }
     ]
   }
-  expect(parseCanvas(JSON.stringify(foreign))).toEqual(foreign)
+  expect(parseCanvas(JSON.stringify(foreign))).toEqual(foreign as unknown as CanvasDocument)
   const relabelled = connect(parseCanvas(JSON.stringify(foreign)), "b", "a", "contradicts")
   expect(relabelled.edges[0]).toEqual({ ...foreign.edges[0], label: "contradicts" })
   expect(parseCanvas("{}")).toEqual(emptyCanvas())
