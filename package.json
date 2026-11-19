@@ -5,6 +5,7 @@
   "exports": {
     ".": "./src/relations.ts",
     "./canvas": "./src/canvas.tsx",
+    "./document": "./src/document.ts",
     "./projection": "./src/projection.ts"
   },
   "files": ["src"],
