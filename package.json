@@ -1,6 +1,6 @@
 {
   "name": "@nyssance/metro",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "A canvas of linked cards kept as a JSON Canvas file, with shared gestures, alignment guides, automatic layout and undo.",
   "type": "module",
   "license": "AGPL-3.0-only",
