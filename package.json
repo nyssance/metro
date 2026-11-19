@@ -1,7 +1,13 @@
 {
   "name": "@nyssance/metro",
-  "version": "0.5.0",
+  "version": "0.1.0",
+  "description": "A canvas of linked cards kept as a JSON Canvas file, with shared gestures, alignment guides, automatic layout and undo.",
   "type": "module",
+  "license": "AGPL-3.0-only",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/nyssance/metro.git"
+  },
   "exports": {
     ".": "./src/document.ts",
     "./canvas": "./src/canvas.tsx",
@@ -12,7 +18,11 @@
     "./snap": "./src/snap.tsx",
     "./tidy": "./src/tidy.ts"
   },
-  "files": ["src"],
+  "files": [
+    "src",
+    "README.md",
+    "LICENSE"
+  ],
   "peerDependencies": {
     "@xyflow/react": "^13.0.2",
     "elkjs": "^0.12.1",
@@ -30,6 +40,7 @@
     }
   },
   "scripts": {
+    "check": "bun check --no-script",
     "test": "bun test"
   },
   "devDependencies": {
