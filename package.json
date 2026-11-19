@@ -7,6 +7,7 @@
     "./canvas": "./src/canvas.tsx",
     "./document": "./src/document.ts",
     "./grid": "./src/grid.ts",
+    "./history": "./src/history.ts",
     "./projection": "./src/projection.ts",
     "./snap": "./src/snap.tsx",
     "./tidy": "./src/tidy.ts"
