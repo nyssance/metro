@@ -58,3 +58,19 @@ export function WorkCanvas<N extends Node = Node, E extends Edge = Edge>(props: 
     />
   )
 }
+
+/** The modifier key a shortcut hint should show on this platform. */
+export function modifierLabel(platform = navigator.platform): string {
+  return /Mac|iPhone|iPad/.test(platform) ? "⌘" : "Ctrl"
+}
+
+/** Whether a key event belongs to a field being typed in, so canvas shortcuts must leave it alone. */
+export function isTextInput(target: EventTarget | null): boolean {
+  return (
+    target instanceof HTMLElement &&
+    (target.isContentEditable ||
+      !!target.closest(
+        'input, textarea, select, [contenteditable="true"], [contenteditable=""], [contenteditable="plaintext-only"]'
+      ))
+  )
+}
