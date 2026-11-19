@@ -3,12 +3,10 @@
   "version": "0.5.0",
   "type": "module",
   "exports": {
-    ".": "./src/relations.ts",
+    ".": "./src/document.ts",
     "./canvas": "./src/canvas.tsx",
-    "./document": "./src/document.ts",
     "./grid": "./src/grid.ts",
     "./history": "./src/history.ts",
-    "./projection": "./src/projection.ts",
     "./snap": "./src/snap.tsx",
     "./tidy": "./src/tidy.ts"
   },

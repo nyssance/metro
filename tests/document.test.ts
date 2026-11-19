@@ -16,7 +16,7 @@ import {
   putNode,
   removeNode,
   serializeCanvas
-} from "@nyssance/metro/document"
+} from "@nyssance/metro"
 
 function board() {
   let next = emptyCanvas()
