@@ -5,6 +5,7 @@
   "exports": {
     ".": "./src/document.ts",
     "./canvas": "./src/canvas.tsx",
+    "./controls": "./src/controls.ts",
     "./grid": "./src/grid.ts",
     "./history": "./src/history.ts",
     "./presets/*.css": "./src/presets/*.css",
