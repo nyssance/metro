@@ -275,3 +275,83 @@ export function fileSection(text: string, subpath: string | undefined): string {
   const next = lines.findIndex((line, index) => index > start && (heading(line)?.[1].length ?? 7) <= level)
   return lines.slice(start, next === -1 ? undefined : next).join("\n")
 }
+
+/** Nodes and the edges among them, lifted off a canvas to be put down again, there or on another. */
+export interface CanvasClip {
+  nodes: CanvasNode[]
+  edges: CanvasEdge[]
+}
+
+/** Copy nodes with what their groups contain and every edge that runs between two of them. */
+export function copyNodes(canvas: CanvasDocument, ids: Iterable<string>): CanvasClip {
+  const copied = new Set(ids)
+  for (const id of [...copied]) for (const inside of nodesInside(canvas, id)) copied.add(inside)
+  return {
+    nodes: canvas.nodes.filter((node) => copied.has(node.id)),
+    edges: canvas.edges.filter((edge) => copied.has(edge.fromNode) && copied.has(edge.toNode))
+  }
+}
+
+/**
+ * Put a clip down as new nodes and edges, keeping its arrangement: with its top-left corner at
+ * `at`, or a step away from where it was copied. Returns the canvas and the new node ids.
+ */
+export function pasteNodes(
+  canvas: CanvasDocument,
+  clip: CanvasClip,
+  newId: () => string,
+  at?: { x: number; y: number }
+): { canvas: CanvasDocument; ids: string[] } {
+  if (clip.nodes.length === 0) return { canvas, ids: [] }
+  const left = Math.min(...clip.nodes.map((node) => node.x))
+  const top = Math.min(...clip.nodes.map((node) => node.y))
+  const dx = at ? Math.round(at.x) - left : GAP
+  const dy = at ? Math.round(at.y) - top : GAP
+  const renamed = new Map(clip.nodes.map((node) => [node.id, newId()]))
+  const nodes = clip.nodes.map((node) => ({ ...node, id: renamed.get(node.id)!, x: node.x + dx, y: node.y + dy }))
+  const edges = clip.edges.map((edge) => {
+    const fromNode = renamed.get(edge.fromNode)!
+    const toNode = renamed.get(edge.toNode)!
+    return { ...edge, id: `${fromNode}-${toNode}`, fromNode, toNode }
+  })
+  return {
+    // Groups stay beneath the nodes they contain.
+    canvas: {
+      ...canvas,
+      nodes: [...nodes.filter((node) => node.type === "group"), ...canvas.nodes, ...nodes.filter((node) => node.type !== "group")],
+      edges: [...canvas.edges, ...edges]
+    },
+    ids: [...renamed.values()]
+  }
+}
+
+/** Draw a group around nodes, beneath everything else. */
+export function groupNodes(canvas: CanvasDocument, ids: Iterable<string>, id: string, padding = 24): CanvasDocument {
+  const wanted = new Set(ids)
+  const members = canvas.nodes.filter((node) => wanted.has(node.id))
+  if (members.length === 0) throw new Error("A group needs at least one node")
+  const left = Math.min(...members.map((node) => node.x)) - padding
+  const top = Math.min(...members.map((node) => node.y)) - padding
+  const group: GroupNode = {
+    id,
+    type: "group",
+    x: left,
+    y: top,
+    width: Math.max(...members.map((node) => node.x + node.width)) + padding - left,
+    height: Math.max(...members.map((node) => node.y + node.height)) + padding - top
+  }
+  return { ...canvas, nodes: [group, ...canvas.nodes] }
+}
+
+/** The nodes whose text, file, link or group name contains the query, ignoring case. */
+export function findNodes(canvas: CanvasDocument, query: string): string[] {
+  const wanted = query.trim().toLowerCase()
+  if (!wanted) return []
+  return canvas.nodes
+    .filter((node) =>
+      [node.text, node.file, node.subpath, node.url, node.label].some(
+        (value) => typeof value === "string" && value.toLowerCase().includes(wanted)
+      )
+    )
+    .map((node) => node.id)
+}

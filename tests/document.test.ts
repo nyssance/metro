@@ -3,12 +3,16 @@ import { expect, test } from "bun:test"
 import {
   colorNode,
   connect,
+  copyNodes,
   disconnect,
   emptyCanvas,
   fileSection,
+  findNodes,
   frameNode,
+  groupNodes,
   nodesInside,
   parseCanvas,
+  pasteNodes,
   putNode,
   removeNode,
   serializeCanvas
@@ -163,4 +167,42 @@ test("a subpath narrows a Markdown file to one heading's section or one block", 
   expect(fileSection(text, "#^paid")).toBe("Paid in full ^paid")
   expect(fileSection(text, "#Missing")).toBe(text)
   expect(fileSection(text, undefined)).toBe(text)
+})
+
+test("a copy keeps its arrangement and inner edges, takes what its groups contain, and lands where it is put", () => {
+  let next = frameNode(putNode(board(), "area", { type: "group", label: "Supplier" }), "area", {
+    x: -10,
+    y: -10,
+    width: 760,
+    height: 320
+  })
+  next = connect(next, "doubt", "call", "")
+  const clip = copyNodes(next, ["area", "doubt"])
+  expect(clip.nodes.map((node) => node.id)).toEqual(["area", "invoice", "quote", "doubt"])
+  expect(clip.edges.map((edge) => edge.id)).toEqual(["invoice-quote", "doubt-invoice"])
+
+  let serial = 0
+  const pasted = pasteNodes(next, clip, () => `copy${++serial}`, { x: 2000, y: 500 })
+  expect(pasted.ids).toEqual(["copy1", "copy2", "copy3", "copy4"])
+  expect(pasted.canvas.nodes[0]).toMatchObject({ id: "copy1", type: "group", x: 2000, y: 500, label: "Supplier" })
+  const copy = (id: string) => pasted.canvas.nodes.find((node) => node.id === id)!
+  expect([copy("copy2").x, copy("copy2").y]).toEqual([2010, 510])
+  expect(copy("copy3").x - copy("copy2").x).toBe(440)
+  expect(pasted.canvas.edges.slice(-2)).toMatchObject([
+    { id: "copy2-copy3", fromNode: "copy2", toNode: "copy3", label: "same supplier" },
+    { id: "copy4-copy2", fromNode: "copy4", toNode: "copy2" }
+  ])
+  expect(nodesInside(pasted.canvas, "copy1")).toEqual(["copy2", "copy3"])
+  expect(pasteNodes(next, copyNodes(next, ["doubt"]), () => "again").canvas.nodes.at(-1)).toMatchObject({ x: 800, y: 40 })
+  expect(pasteNodes(next, { nodes: [], edges: [] }, () => "x").canvas).toBe(next)
+})
+
+test("a group is drawn around the chosen nodes, and a search matches what they show", () => {
+  const next = groupNodes(board(), ["invoice", "quote"], "pair")
+  expect(next.nodes[0]).toEqual({ id: "pair", type: "group", x: -24, y: -24, width: 768, height: 348 })
+  expect(nodesInside(next, "pair")).toEqual(["invoice", "quote"])
+  expect(() => groupNodes(board(), ["gone"], "g")).toThrow("at least one node")
+  expect(findNodes(board(), "PRICE")).toEqual(["doubt", "call"])
+  expect(findNodes(board(), "example.com")).toEqual(["quote"])
+  expect(findNodes(board(), "  ")).toEqual([])
 })
